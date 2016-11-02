@@ -1,7 +1,13 @@
 # coding:utf-8
 
 import sys
-from PySide import QtGui, QtCore
+try:
+    from PySide.QtGui import *
+    from PySide.QtCore import *
+except:
+    from PySide2.QtGui import *
+    from PySide2.QtCore import *
+    from PySide2.QtWidgets import *
 import os
 import json
 import collections
@@ -13,7 +19,7 @@ reload(yetiUtils)
 
 
 
-class ExportYetiWidget(QtGui.QWidget):
+class ExportYetiWidget(QWidget):
     def __init__(self, parent=None):
         super(ExportYetiWidget, self).__init__(parent)
         self.initUI()
@@ -21,44 +27,44 @@ class ExportYetiWidget(QtGui.QWidget):
     
     def initUI(self):
         # Create Widget
-        self.main_Layout = QtGui.QVBoxLayout()
+        self.main_Layout = QVBoxLayout()
         self.main_Layout.setContentsMargins(3,3,3,3)
         self.main_Layout.setSpacing(5)
         self.setLayout(self.main_Layout)
     
         
         # Ani ScInfo Import 
-        scInfoLayout = QtGui.QHBoxLayout()
+        scInfoLayout = QHBoxLayout()
         scInfoLayout.setSpacing(3)
         scInfoLayout.setContentsMargins(0,0,0,0)
-        self.dirScInfoLine = QtGui.QLineEdit()
-        self.dirScInfoBttn = QtGui.QPushButton('ScInfo')
+        self.dirScInfoLine = QLineEdit()
+        self.dirScInfoBttn = QPushButton('ScInfo')
         scInfoLayout.addWidget(self.dirScInfoLine)
         scInfoLayout.addWidget(self.dirScInfoBttn)
           
-        scInfoImportBox = QtGui.QGroupBox('Ani ScInfo Import')
-        scInfoImportBoxLayout = QtGui.QVBoxLayout()
+        scInfoImportBox = QGroupBox('Ani ScInfo Import')
+        scInfoImportBoxLayout = QVBoxLayout()
         scInfoImportBoxLayout.setContentsMargins(3,3,3,3)
         scInfoImportBox.setLayout(scInfoImportBoxLayout)
         scInfoImportBoxLayout.addLayout(scInfoLayout)
         
         # Option
-        option_GroupBox = QtGui.QGroupBox("Option")
-        option_Layout = QtGui.QGridLayout()
+        option_GroupBox = QGroupBox("Option")
+        option_Layout = QGridLayout()
         
-        self.timeOption_Label = QtGui.QLabel("Time range:")
-        self.timeOption1_RadioButton = QtGui.QRadioButton("Time Slider")
-        self.timeOption2_RadioButton = QtGui.QRadioButton("Start/End")
-        self.timeOption_BttnGrp = QtGui.QButtonGroup(self)
+        self.timeOption_Label = QLabel("Time range:")
+        self.timeOption1_RadioButton = QRadioButton("Time Slider")
+        self.timeOption2_RadioButton = QRadioButton("Start/End")
+        self.timeOption_BttnGrp = QButtonGroup(self)
         self.timeOption_BttnGrp.addButton(self.timeOption1_RadioButton)
         self.timeOption_BttnGrp.addButton(self.timeOption2_RadioButton)
         
-        self.startEndFrame_Label = QtGui.QLabel("Start/End:")
-        self.startFrame_LineEdit = QtGui.QLineEdit("1")
-        self.endFrame_LineEdit = QtGui.QLineEdit("24")
+        self.startEndFrame_Label = QLabel("Start/End:")
+        self.startFrame_LineEdit = QLineEdit("1")
+        self.endFrame_LineEdit = QLineEdit("24")
         
-        self.timeUnit_Label = QtGui.QLabel("Time Unit:")
-        self.timeUnit_ComboBox = QtGui.QComboBox()
+        self.timeUnit_Label = QLabel("Time Unit:")
+        self.timeUnit_ComboBox = QComboBox()
         
         self.timeOption1_RadioButton.setChecked(True)
         self.startFrame_LineEdit.setEnabled(False)
@@ -80,11 +86,11 @@ class ExportYetiWidget(QtGui.QWidget):
         option_GroupBox.setLayout(option_Layout)
         
         # Used ABC
-        abcGroupBox          = QtGui.QGroupBox('Used ABC')
-        grpBoxlayout         = QtGui.QGridLayout()
-        self.abcListWidget   = QtGui.QListWidget()
-        self.loadButton      = QtGui.QPushButton('Load/Reload')
-        self.selectAllButton = QtGui.QPushButton('Select All')
+        abcGroupBox          = QGroupBox('Used ABC')
+        grpBoxlayout         = QGridLayout()
+        self.abcListWidget   = QListWidget()
+        self.loadButton      = QPushButton('Load/Reload')
+        self.selectAllButton = QPushButton('Select All')
         
         grpBoxlayout.addWidget(self.abcListWidget, 0,0,1,2)
         grpBoxlayout.addWidget(self.loadButton, 1,0)
@@ -92,20 +98,20 @@ class ExportYetiWidget(QtGui.QWidget):
         abcGroupBox.setLayout(grpBoxlayout)
         
         # Load
-        loadGroupBox       = QtGui.QGroupBox('Load')
-        loadGroupBoxLayout = QtGui.QHBoxLayout() 
+        loadGroupBox       = QGroupBox('Load')
+        loadGroupBoxLayout = QHBoxLayout() 
         loadGroupBox.setLayout(loadGroupBoxLayout)
-        self.loadYetiBttn = QtGui.QPushButton('Load Yeti Asset')
-        self.loadAbcBttn  = QtGui.QPushButton('Load Abc Cache')
+        self.loadYetiBttn = QPushButton('Load Yeti Asset')
+        self.loadAbcBttn  = QPushButton('Load Abc Cache')
         loadGroupBoxLayout.addWidget(self.loadYetiBttn)
         loadGroupBoxLayout.addWidget(self.loadAbcBttn)
         
         # Export
-        exportLayout = QtGui.QHBoxLayout()
+        exportLayout = QHBoxLayout()
         exportLayout.setContentsMargins(10,5,10,5)
-        self.exportYetiCacheBttn = QtGui.QPushButton('Export Yeti Cache')
+        self.exportYetiCacheBttn = QPushButton('Export Yeti Cache')
         self.exportYetiCacheBttn.setFixedWidth(120)
-        exportLayout.addSpacerItem(QtGui.QSpacerItem(5,5,QtGui.QSizePolicy.Expanding))
+        exportLayout.addSpacerItem(QSpacerItem(5,5,QSizePolicy.Expanding))
         exportLayout.addWidget(self.exportYetiCacheBttn)
         
         # Set Layout
@@ -130,7 +136,7 @@ class ExportYetiWidget(QtGui.QWidget):
     
     '''ani scInfo Import Function'''
     def getScInfo(self):
-        fileDir = QtGui.QFileDialog.getOpenFileName(self, caption = 'Open ScInof', filter=('*.json'))[0]
+        fileDir = QFileDialog.getOpenFileName(self, caption = 'Open ScInof', filter=('*.json'))[0]
         if fileDir:
             scInfoPath = fileDir.replace("\\", "/")
             self.dirScInfoLine.setText(scInfoPath)
@@ -220,7 +226,7 @@ class ExportYetiWidget(QtGui.QWidget):
         self.items = []
         if cacheInfos:
             for caheInfo in cacheInfos:
-                itemWidget = QtGui.QListWidgetItem(self.abcListWidget) 
+                itemWidget = QListWidgetItem(self.abcListWidget) 
                 item = AbcItemWiget(caheInfo)
                 self.items.append(item)
                 itemWidget.setSizeHint(item.sizeHint())
@@ -271,12 +277,12 @@ class ExportYetiWidget(QtGui.QWidget):
                 yetiUtils.exportYetiCache(yetiInfoPath, yetiCachePath, yetiCacheOption, item.namespace)
                     
     def warningMessage(self, msg):
-        warningMessage = QtGui.QMessageBox(self)
+        warningMessage = QMessageBox(self)
         warningMessage.setText(msg)
-        warningMessage.setIcon(QtGui.QMessageBox.Critical)
+        warningMessage.setIcon(QMessageBox.Critical)
         warningMessage.exec_()
 
-class AbcItemWiget(QtGui.QWidget):
+class AbcItemWiget(QWidget):
     def __init__(self, cacheInfo, parent=None):
         
         super(AbcItemWiget, self).__init__(parent)
@@ -290,8 +296,8 @@ class AbcItemWiget(QtGui.QWidget):
         
     def initUI(self):
         # Create Widget
-        self.main_Layout = QtGui.QGridLayout()
-        self.checkBox = QtGui.QCheckBox(self)
+        self.main_Layout = QGridLayout()
+        self.checkBox = QCheckBox(self)
         
         # Set Layout
         self.main_Layout.addWidget(self.checkBox, 0, 0)
@@ -306,7 +312,7 @@ class AbcItemWiget(QtGui.QWidget):
         
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     exportWidget = ExportYetiWidget()
     exportWidget.show()
     sys.exit(app.exec_())

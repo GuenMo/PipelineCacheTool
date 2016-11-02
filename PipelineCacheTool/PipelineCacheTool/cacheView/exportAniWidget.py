@@ -1,13 +1,21 @@
 # coding:utf-8
 
 import sys
-from PySide import QtGui, QtCore
+
+try:
+    from PySide.QtGui import *
+    from PySide.QtCore import *
+except:
+    from PySide2.QtGui import *
+    from PySide2.QtCore import *
+    from PySide2.QtWidgets import *
+    
 import cacheControl.cacheCore as abcUtils
 reload(abcUtils)
 
 from functools import partial
 
-class ExportOptionWidget(QtGui.QWidget):
+class ExportOptionWidget(QWidget):
     def __init__(self, parent=None):
         super(ExportOptionWidget, self).__init__(parent)
         self.initUI()
@@ -15,25 +23,25 @@ class ExportOptionWidget(QtGui.QWidget):
     
     def initUI(self):
         # Create Widget
-        self.main_Layout = QtGui.QGridLayout()
+        self.main_Layout = QGridLayout()
         self.main_Layout.setContentsMargins(3,0,3,0)
         self.main_Layout.setSpacing(10)
         self.setLayout(self.main_Layout)
     
-        self.option_GroupBox = QtGui.QGroupBox("Option")
-        self.option_Layout = QtGui.QGridLayout()
-        self.timeOption_Label = QtGui.QLabel("Time range:")
-        self.startEndFrame_Label = QtGui.QLabel("Start/End:")
-        self.timeUnit_Label = QtGui.QLabel("Time Unit:")
-        self.directory_Label = QtGui.QLabel("Directory:")
-        self.timeOption1_RadioButton = QtGui.QRadioButton("Time Slider")
-        self.timeOption2_RadioButton = QtGui.QRadioButton("Start/End")
-        self.startFrame_LineEdit = QtGui.QLineEdit("1")
-        self.endFrame_LineEdit = QtGui.QLineEdit("24")
-        self.timeUnit_ComboBox = QtGui.QComboBox()
-        self.fromScene_PushButton = QtGui.QPushButton("Policy")
-        self.fromBrowser_PushButton = QtGui.QPushButton("Browser")
-        self.directory_LineEdit = QtGui.QLineEdit()
+        self.option_GroupBox = QGroupBox("Option")
+        self.option_Layout = QGridLayout()
+        self.timeOption_Label = QLabel("Time range:")
+        self.startEndFrame_Label = QLabel("Start/End:")
+        self.timeUnit_Label = QLabel("Time Unit:")
+        self.directory_Label = QLabel("Directory:")
+        self.timeOption1_RadioButton = QRadioButton("Time Slider")
+        self.timeOption2_RadioButton = QRadioButton("Start/End")
+        self.startFrame_LineEdit = QLineEdit("1")
+        self.endFrame_LineEdit = QLineEdit("24")
+        self.timeUnit_ComboBox = QComboBox()
+        self.fromScene_PushButton = QPushButton("Policy")
+        self.fromBrowser_PushButton = QPushButton("Browser")
+        self.directory_LineEdit = QLineEdit()
           
         # Set Layout
         self.option_Layout.addWidget(self.timeOption_Label, 1, 0)
@@ -51,7 +59,7 @@ class ExportOptionWidget(QtGui.QWidget):
         self.option_GroupBox.setLayout(self.option_Layout)
         self.main_Layout.addWidget(self.option_GroupBox, 0, 0)
         
-        self.timeOption_BttnGrp = QtGui.QButtonGroup(self)
+        self.timeOption_BttnGrp = QButtonGroup(self)
         self.timeOption_BttnGrp.addButton(self.timeOption1_RadioButton)
         self.timeOption_BttnGrp.addButton(self.timeOption2_RadioButton)
 
@@ -87,7 +95,7 @@ class ExportOptionWidget(QtGui.QWidget):
         self.directory_LineEdit.setText(cacheDir)
     
     def setDirectoryFromBrowser(self):
-        winStyleDir = str(QtGui.QFileDialog.getExistingDirectory (self))
+        winStyleDir = str(QFileDialog.getExistingDirectory (self))
         cacheDir = winStyleDir.replace("\\", "/")
         self.directory_LineEdit.setText(str(cacheDir)) 
         
@@ -110,21 +118,21 @@ class ExportOptionWidget(QtGui.QWidget):
             option['directory'] = cacheDir
         
         if self.directory_LineEdit.text():
-            directory = QtCore.QDir(self.directory_LineEdit.text())
-            if QtCore.QDir.exists(directory):
+            directory = QDir(self.directory_LineEdit.text())
+            if QDir.exists(directory):
                 return option
             else:
-                warningMessage = QtGui.QMessageBox(self)
+                warningMessage = QMessageBox(self)
                 warningMessage.setText('Path does not exist. \nPlease check the path.')
-                warningMessage.setIcon(QtGui.QMessageBox.Critical)
+                warningMessage.setIcon(QMessageBox.Critical)
                 warningMessage.exec_()
         else:
-            warningMessage = QtGui.QMessageBox(self)
+            warningMessage = QMessageBox(self)
             warningMessage.setText('Please set the path.')
-            warningMessage.setIcon(QtGui.QMessageBox.Warning)
+            warningMessage.setIcon(QMessageBox.Warning)
             warningMessage.exec_()
         
-class ReferenceWisget(QtGui.QWidget):
+class ReferenceWisget(QWidget):
     def __init__(self, parent=None):
         super(ReferenceWisget, self).__init__(parent)
         self.initUI()
@@ -134,17 +142,17 @@ class ReferenceWisget(QtGui.QWidget):
         # Create Widget
         self.setWindowTitle('Reference List')
         
-        self.mainLayout      = QtGui.QGridLayout()
+        self.mainLayout      = QGridLayout()
         self.setLayout(self.mainLayout)
         self.mainLayout.setContentsMargins(3,0,3,0)
         self.mainLayout.setSpacing(10)
         self.setLayout(self.mainLayout)
         
-        self.refGroupBox     = QtGui.QGroupBox('Used Reference')
-        self.grpBoxlayout    = QtGui.QGridLayout()
-        self.refListWidget   = QtGui.QListWidget()
-        self.loadButton      = QtGui.QPushButton('Load/Reload')
-        self.selectAllButton = QtGui.QPushButton('Select All')
+        self.refGroupBox     = QGroupBox('Used Reference')
+        self.grpBoxlayout    = QGridLayout()
+        self.refListWidget   = QListWidget()
+        self.loadButton      = QPushButton('Load/Reload')
+        self.selectAllButton = QPushButton('Select All')
         
         # Set Layout
         self.grpBoxlayout.addWidget(self.refListWidget, 0,0,1,2)
@@ -168,7 +176,7 @@ class ReferenceWisget(QtGui.QWidget):
         refereceNodes = abcUtils.getRefereces()
         
         for camera in cameraNodes:
-            camItemWidget = QtGui.QListWidgetItem(self.refListWidget) 
+            camItemWidget = QListWidgetItem(self.refListWidget) 
             camItem = ReferenceItemWiget(namespace = camera['namespace'],
                                          rootNode  = camera['rootNode'], 
                                          abcAsset  = camera['abcAsset'],
@@ -182,7 +190,7 @@ class ReferenceWisget(QtGui.QWidget):
             self.listItem.append(camItem)
         
         for refNode in refereceNodes:
-            itemWidget = QtGui.QListWidgetItem(self.refListWidget) 
+            itemWidget = QListWidgetItem(self.refListWidget) 
             item = ReferenceItemWiget(namespace = refNode['namespace'], 
                                       rootNode  = refNode['rootNode'], 
                                       abcAsset  = refNode['abcAsset'],
@@ -216,7 +224,7 @@ class ReferenceWisget(QtGui.QWidget):
                     checkedItemList.append(item.getItemInfo())
         return checkedItemList
 
-class ReferenceItemWiget(QtGui.QWidget):
+class ReferenceItemWiget(QWidget):
     #assetInfo = {'namespace':namespace, 'modGrp':modGrp, 'abcAsset':abcAsset, 'type':'cam'}
     def __init__(self, namespace = '', 
                  rootNode = '', 
@@ -239,8 +247,8 @@ class ReferenceItemWiget(QtGui.QWidget):
         
     def initUI(self):
         # Create Widget
-        self.main_Layout = QtGui.QGridLayout()
-        self.checkBox = QtGui.QCheckBox(self)
+        self.main_Layout = QGridLayout()
+        self.checkBox = QCheckBox(self)
         
         # Set Layout
         self.main_Layout.addWidget(self.checkBox, 0, 0)
@@ -263,7 +271,7 @@ class ReferenceItemWiget(QtGui.QWidget):
                 'abcPath':'', 
                 'nodeType':self.nodeType}
 
-class ExportAniWidget(QtGui.QWidget):
+class ExportAniWidget(QWidget):
     def __init__(self, parent=None):
         super(ExportAniWidget, self).__init__(parent)
         
@@ -271,24 +279,24 @@ class ExportAniWidget(QtGui.QWidget):
         self.setWindowTitle('Export Widget')
     
         # Layout
-        mainLayout = QtGui.QVBoxLayout()
+        mainLayout = QVBoxLayout()
         mainLayout.setContentsMargins(5,5,5,5)
         mainLayout.setSpacing(10)
         
         self.exportOptions = ExportOptionWidget()
         self.referenceList = ReferenceWisget()
         
-        bttnLayout = QtGui.QHBoxLayout()
+        bttnLayout = QHBoxLayout()
         bttnLayout.setContentsMargins(0,0,0,0)
         bttnLayout.setSpacing(5)
-        bttnLayout.setAlignment(QtCore.Qt.AlignTop)
-        scInfoBttn = QtGui.QPushButton('Create Scene Info')
+        bttnLayout.setAlignment(Qt.AlignTop)
+        scInfoBttn = QPushButton('Create Scene Info')
         #scInfoBttn.setFixedWidth(100)
-        exportBttn = QtGui.QPushButton('Export ABC')
+        exportBttn = QPushButton('Export ABC')
         #exportBttn.setFixedWidth(100)
-        printBttn  = QtGui.QPushButton('Print Command')
+        printBttn  = QPushButton('Print Command')
         #printBttn.setFixedWidth(100)
-        #bttnLayout.addSpacerItem(QtGui.QSpacerItem(5,5,QtGui.QSizePolicy.Expanding))
+        #bttnLayout.addSpacerItem(QSpacerItem(5,5,QSizePolicy.Expanding))
         bttnLayout.addWidget(scInfoBttn)
         bttnLayout.addWidget(exportBttn)
         bttnLayout.addWidget(printBttn)
@@ -329,13 +337,13 @@ class ExportAniWidget(QtGui.QWidget):
             elif operation == 'print':
                 abcUtils.exportAbc(options, exportList, operation)
         else:
-            warningMessage = QtGui.QMessageBox(self)
+            warningMessage = QMessageBox(self)
             warningMessage.setText('Items does not selected. \nPlease select one or more item.')
-            warningMessage.setIcon(QtGui.QMessageBox.Critical)
+            warningMessage.setIcon(QMessageBox.Critical)
             warningMessage.exec_()        
         
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     exportWidget = ExportAniWidget()
     exportWidget.show()
     sys.exit(app.exec_())

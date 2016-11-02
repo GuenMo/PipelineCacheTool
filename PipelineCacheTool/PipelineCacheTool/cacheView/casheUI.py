@@ -1,6 +1,12 @@
 # coding:utf-8
 
-from PySide import QtGui, QtCore
+try:
+    from PySide.QtGui import *
+    from PySide.QtCore import *
+except:
+    from PySide2.QtGui import *
+    from PySide2.QtCore import *
+    from PySide2.QtWidgets import *
 
 from cacheView import exportAniWidget
 reload(exportAniWidget)
@@ -21,7 +27,7 @@ from cacheView.exportYetiWidget import ExportYetiWidget
 
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 
-class AlembicCacheUI(MayaQWidgetDockableMixin, QtGui.QDialog):
+class AlembicCacheUI(MayaQWidgetDockableMixin, QDialog):
     '''
     Maya Dock을 만들어 주는 클래스.
     '''
@@ -30,21 +36,21 @@ class AlembicCacheUI(MayaQWidgetDockableMixin, QtGui.QDialog):
         self.setWindowTitle('Pipeline Cache Tool')
         self.setFixedWidth(400)
         
-        self.main_layout = QtGui.QVBoxLayout()
+        self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0,0,0,0)
         self.main_layout.setSpacing(0)
         self.setLayout(self.main_layout)
         
-        scroll_area = QtGui.QScrollArea()
+        scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
-        scroll_area.setFocusPolicy(QtCore.Qt.NoFocus)
-        scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        scroll_area.setFocusPolicy(Qt.NoFocus)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.main_layout.addWidget(scroll_area)
         
-        main_widget   = QtGui.QWidget()
-        widget_layout = QtGui.QVBoxLayout()
+        main_widget   = QWidget()
+        widget_layout = QVBoxLayout()
         widget_layout.setContentsMargins(0,0,0,0)
-        widget_layout.setAlignment(QtCore.Qt.AlignTop)
+        widget_layout.setAlignment(Qt.AlignTop)
         main_widget.setLayout(widget_layout)
         scroll_area.setWidget(main_widget)
         
@@ -54,18 +60,18 @@ class AlembicCacheUI(MayaQWidgetDockableMixin, QtGui.QDialog):
         widget_layout.addWidget(interpWidget)
 
                 
-class AlembicCacheWidget(QtGui.QFrame):
+class AlembicCacheWidget(QFrame):
     def __init__(self, parent=None):
         super(AlembicCacheWidget, self).__init__()
-        self.setFrameStyle(QtGui.QFrame.Panel | QtGui.QFrame.Raised)
+        self.setFrameStyle(QFrame.Panel | QFrame.Raised)
         
         # Layout
-        mainLayout = QtGui.QVBoxLayout()
+        mainLayout = QVBoxLayout()
         mainLayout.setContentsMargins(5,5,5,5)
         mainLayout.setSpacing(5)
-        mainLayout.setAlignment(QtCore.Qt.AlignTop)
+        mainLayout.setAlignment(Qt.AlignTop)
         
-        self.tabs = QtGui.QTabWidget()
+        self.tabs = QTabWidget()
         mainLayout.addWidget(self.tabs)
         
         self.assetTab      = CreateAssetWidget()

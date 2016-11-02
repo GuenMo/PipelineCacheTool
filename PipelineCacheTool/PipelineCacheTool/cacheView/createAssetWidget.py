@@ -1,7 +1,15 @@
 # coding:utf-8
 
 import os
-from PySide import QtGui
+
+try:
+    from PySide.QtGui import *
+    from PySide.QtCore import *
+except:
+    from PySide2.QtGui import *
+    from PySide2.QtCore import *
+    from PySide2.QtWidgets import *
+    
 import cacheControl.cacheCore as abcUtils
 reload(abcUtils)
 import cacheControl.yetiCore as yetiUtils
@@ -20,7 +28,7 @@ discription = u'''
 6. Non-Manifold Edge가 없어야 합니다.
 '''
 
-class CreateAssetWidget(QtGui.QWidget):
+class CreateAssetWidget(QWidget):
     def __init__(self, parent=None):
         super(CreateAssetWidget, self).__init__(parent)
         self.initUI()
@@ -33,35 +41,35 @@ class CreateAssetWidget(QtGui.QWidget):
         self.setWindowTitle('Create Asset Widget')
     
         # Layout
-        mainLayout = QtGui.QVBoxLayout()
+        mainLayout = QVBoxLayout()
         mainLayout.setContentsMargins(5,5,5,5)
         mainLayout.setSpacing(10)
         
-        self.note = QtGui.QTextEdit()
+        self.note = QTextEdit()
         self.note.setFontPointSize(10)
-        self.note.setTextColor(QtGui.QColor(255,0,0))
+        self.note.setTextColor(QColor(255,0,0))
         self.note.append(discription)
         self.note.setReadOnly(True)
         self.note.setFixedHeight(240)
         
-        self.result = QtGui.QTextEdit()
+        self.result = QTextEdit()
         self.result.setFontPointSize(10)
         self.result.setReadOnly(True)
         
-        assetDirLayout = QtGui.QHBoxLayout()
+        assetDirLayout = QHBoxLayout()
         assetDirLayout.setContentsMargins(3,0,3,0)
         assetDirLayout.setSpacing(3)
         
-        self.assetDir     = QtGui.QLineEdit()
-        self.assetDirBttn = QtGui.QPushButton('Asset Dir')
+        self.assetDir     = QLineEdit()
+        self.assetDirBttn = QPushButton('Asset Dir')
         assetDirLayout.addWidget(self.assetDir)
         assetDirLayout.addWidget(self.assetDirBttn)
         
-        bttnLayout = QtGui.QHBoxLayout()
+        bttnLayout = QHBoxLayout()
         bttnLayout.setContentsMargins(3,0,3,0)
         bttnLayout.setSpacing(3)
-        self.resetBttn  = QtGui.QPushButton('Reset')
-        self.createBttn = QtGui.QPushButton('Create')
+        self.resetBttn  = QPushButton('Reset')
+        self.createBttn = QPushButton('Create')
         bttnLayout.addWidget(self.resetBttn)
         bttnLayout.addWidget(self.createBttn)
         
@@ -82,7 +90,7 @@ class CreateAssetWidget(QtGui.QWidget):
     
     def getAssetDir(self):
         workspace = abcUtils.getWorkSpace()
-        assetDir = QtGui.QFileDialog.getExistingDirectory (self, dir= workspace)
+        assetDir = QFileDialog.getExistingDirectory (self, dir= workspace)
         assetDir = self.setWindowStylePath(assetDir)
         self.assetDir.setText(assetDir)
     
@@ -245,24 +253,24 @@ class CreateAssetWidget(QtGui.QWidget):
         return path.replace("\\", "/")
     
     def writeStep(self, message):
-        color = QtGui.QColor(255,255,255)
+        color = QColor(255,255,255)
         self.result.setTextColor(color)
         self.result.append(message)
     
     def writeResult(self, message):
-        color = QtGui.QColor(123,252,0)
+        color = QColor(123,252,0)
         self.result.setTextColor(color)
         self.result.append(message)
         
     def writeError(self, message):
-        color = QtGui.QColor(255,0,0)
+        color = QColor(255,0,0)
         self.result.setTextColor(color)
         self.result.append(message)
         
     def warningMessage(self, message):
-        warningMessage = QtGui.QMessageBox(self)
+        warningMessage = QMessageBox(self)
         warningMessage.setText(message)
-        warningMessage.setIcon(QtGui.QMessageBox.Critical)
+        warningMessage.setIcon(QMessageBox.Critical)
         warningMessage.exec_()
         return
         
